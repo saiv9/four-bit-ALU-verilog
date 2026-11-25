@@ -1,0 +1,36 @@
+name: ALU RTL Simulation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iverilog
+
+      - name: Compile and run exhaustive testbench
+        run: |
+          mkdir -p build
+          iverilog -g2005 -Wall -s tb_alu_4bit -o build/alu_sim rtl/alu_4bit.v tb/tb_alu_4bit.v
+          vvp build/alu_sim | tee build/simulation.log
+
+      - name: Upload simulation results
+        uses: actions/upload-artifact@v4
+        with:
+          name: alu-simulation-results
+          path: |
+            build/simulation.log
+            alu.vcd
+          if-no-files-found: error
