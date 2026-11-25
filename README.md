@@ -1,103 +1,77 @@
-# 4-Bit Arithmetic Logic Unit (ALU) — Verilog HDL
+# 4-Bit Arithmetic Logic Unit
 
-A beginner-level VLSI / digital-design project for B.Tech ECE students. The project implements a **4-bit combinational ALU** using Verilog-2001 and verifies it with a self-checking testbench.
+[![RTL simulation](https://github.com/saiv9/four-bit-ALU-verilog/actions/workflows/simulation.yml/badge.svg)](https://github.com/saiv9/four-bit-ALU-verilog/actions/workflows/simulation.yml)
 
-## Features
+A 4-bit combinational ALU written in Verilog-2001. It supports six operations and provides carry, borrow, and zero status outputs. A self-checking testbench exhaustively checks every pair of 4-bit operands for the supported operations.
 
-- 4-bit inputs `a` and `b`
-- Six operations: addition, subtraction, AND, OR, XOR and NOT-A
-- `carry_out` flag for addition
-- `borrow_out` flag for subtraction
-- `zero` flag when the result is `0000`
-- Default output for the two reserved operation codes
-- Exhaustive testbench over all 16 × 16 input combinations for the six operations
+## Operations
 
-## Operation table
-
-| `alu_sel` | Operation | Result | Flags |
+| `alu_sel` | Operation | Result | Status |
 |---|---|---|---|
-| `000` | Addition | `a + b` (4-bit result) | `carry_out` reports the fifth bit |
-| `001` | Subtraction | `a - b` (4-bit result) | `borrow_out = 1` when `a < b` |
-| `010` | AND | `a & b` | Carry and borrow are 0 |
-| `011` | OR | `a \| b` | Carry and borrow are 0 |
-| `100` | XOR | `a ^ b` | Carry and borrow are 0 |
-| `101` | NOT-A | `~a` | Carry and borrow are 0 |
-| `110` | Reserved | `0000` | Carry and borrow are 0 |
-| `111` | Reserved | `0000` | Carry and borrow are 0 |
+| `000` | Addition | `a + b` | `carry_out` is the fifth result bit |
+| `001` | Subtraction | `a - b` | `borrow_out` is high when `a < b` |
+| `010` | AND | `a & b` | Carry and borrow are cleared |
+| `011` | OR | `a \| b` | Carry and borrow are cleared |
+| `100` | XOR | `a ^ b` | Carry and borrow are cleared |
+| `101` | NOT-A | `~a` | Carry and borrow are cleared |
+| `110`, `111` | Reserved | `0000` | Carry and borrow are cleared |
 
-`zero` is 1 whenever `result` is `0000`, including for a reserved operation code.
+The `zero` output is high whenever the four-bit result is `0000`, including for a reserved operation code.
 
-## Repository structure
+## Architecture
 
-```text
-four_bit_alu_vlsi/
-├── rtl/
-│   └── alu_4bit.v
-├── tb/
-│   └── tb_alu_4bit.v
-├── docs/
-│   └── DESIGN_NOTES.md
-├── .github/workflows/
-│   └── simulation.yml
-├── Makefile
-├── .gitignore
-├── README.md
-└── LINKEDIN_POST.md
-```
+![ALU block diagram](docs/architecture.svg)
 
-## Run simulation
+The block is purely combinational. It has no clock, reset, or internal state. Default assignments are made before the operation selection to avoid unintended latch inference.
 
-Install [Icarus Verilog](https://steveicarus.github.io/iverilog/) and GNU Make. From the project root, run:
+## Interface
+
+| Signal | Direction | Description |
+|---|---|---|
+| `a[3:0]`, `b[3:0]` | Input | 4-bit operands |
+| `alu_sel[2:0]` | Input | Operation selector |
+| `result[3:0]` | Output | 4-bit operation result |
+| `carry_out` | Output | Unsigned addition carry |
+| `borrow_out` | Output | Unsigned subtraction borrow |
+| `zero` | Output | High when `result == 0` |
+
+## Run the simulation
+
+Install Icarus Verilog and GNU Make. From the repository root, run:
 
 ```bash
 make sim
 ```
 
-Or compile and run directly:
+Or compile directly:
 
 ```bash
 iverilog -g2005 -o alu_sim rtl/alu_4bit.v tb/tb_alu_4bit.v
 vvp alu_sim
 ```
 
-Expected successful output:
+The testbench checks all 256 operand pairs for each of the six supported operations, then checks both reserved operation codes. This gives 1,538 result and flag checks. A successful local run prints:
 
 ```text
 PASS: all ALU tests completed successfully.
 ```
 
-The testbench checks every pair of 4-bit input values for all six supported operations, plus both reserved operation codes. It checks the result and all three flags.
+GitHub Actions runs the same testbench on pushes and pull requests.
 
-## View waveforms (optional)
+## Optional synthesis
 
-```bash
-make wave
-```
-
-This creates `alu.vcd`. Open it with GTKWave. The waveform target requires GTKWave to be installed.
-
-## Synthesis (optional)
-
-Install [Yosys](https://yosyshq.net/yosys/) and run:
+With Yosys installed, run:
 
 ```bash
 make synth
 ```
 
-This performs a simple synthesis/statistics pass. It is not a placement, routing, or timing-closure result.
+This reports a synthesis statistics pass. It is not a placement, routing, or timing-closure result.
 
-## What to learn from this project
+## Scope
 
-1. How a combinational RTL block is described using `always @(*)` and `case`.
-2. How to avoid latch inference by assigning defaults to outputs.
-3. How to represent arithmetic carry and subtraction borrow.
-4. How to write a self-checking testbench and compare outputs with expected values.
-5. How simulation and synthesis fit into a basic RTL design flow.
+This is a small unsigned 4-bit educational datapath. It does not implement signed arithmetic, overflow detection, shifts, multiplication, or a registered pipeline. No physical FPGA testing is claimed.
 
-## Limitations / possible improvements
+## License
 
-This is an educational 4-bit ALU, not a production processor datapath. Possible extensions include a parameterized width, signed arithmetic and overflow flag, logical shifts, a registered ALU, and constrained-random verification.
-
-## Author checklist
-
-Before adding this to a portfolio, run the simulation yourself, inspect a few waveforms, and make sure you can explain the operation table, carry/borrow behavior, and testbench. Do not claim FPGA implementation or physical silicon testing unless you actually complete those steps.
+MIT. See [LICENSE](LICENSE).
