@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="430" viewBox="0 0 1000 430">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}.box{fill:#fff;stroke:#24364b;stroke-width:2}.logic{fill:#eaf2ff;stroke:#315d91;stroke-width:2}
+      .wire{fill:none;stroke:#24364b;stroke-width:2.5}.title{font:700 24px Arial,sans-serif;fill:#17283d}
+      .head{font:700 18px Arial,sans-serif;fill:#17324d}.label{font:14px Arial,sans-serif;fill:#26364a}
+      .small{font:12px Arial,sans-serif;fill:#506176}
+    </style>
+  </defs>
+  <rect class="bg" width="1000" height="430" rx="18"/>
+  <text class="title" x="500" y="42" text-anchor="middle">4-Bit Combinational ALU</text>
+  <rect class="box" x="38" y="94" width="202" height="240" rx="12"/>
+  <text class="head" x="139" y="130" text-anchor="middle">Inputs</text>
+  <text class="label" x="70" y="178">a[3:0]</text>
+  <text class="label" x="70" y="218">b[3:0]</text>
+  <text class="label" x="70" y="258">alu_sel[2:0]</text>
+  <rect class="logic" x="360" y="124" width="280" height="180" rx="14"/>
+  <text class="head" x="500" y="165" text-anchor="middle">ALU operation logic</text>
+  <text class="label" x="500" y="204" text-anchor="middle">ADD · SUB · AND · OR</text>
+  <text class="label" x="500" y="230" text-anchor="middle">XOR · NOT-A</text>
+  <text class="small" x="500" y="270" text-anchor="middle">Combinational selection</text>
+  <path class="wire" d="M240 178 H360 M240 218 H360 M240 258 H360"/>
+  <path class="wire" d="M640 190 H710 V120 H760 M710 210 V210 H760 M710 270 V300 H760"/>
+  <rect class="box" x="760" y="82" width="200" height="78" rx="10"/>
+  <text class="head" x="860" y="112" text-anchor="middle">result[3:0]</text>
+  <text class="small" x="860" y="137" text-anchor="middle">4-bit operation output</text>
+  <rect class="box" x="760" y="180" width="200" height="78" rx="10"/>
+  <text class="head" x="860" y="210" text-anchor="middle">carry / borrow</text>
+  <text class="small" x="860" y="235" text-anchor="middle">Unsigned arithmetic flags</text>
+  <rect class="box" x="760" y="278" width="200" height="78" rx="10"/>
+  <text class="head" x="860" y="308" text-anchor="middle">zero</text>
+  <text class="small" x="860" y="333" text-anchor="middle">Asserted when result is zero</text>
+  <text class="small" x="500" y="390" text-anchor="middle">No clock, reset, or internal state</text>
+</svg>
